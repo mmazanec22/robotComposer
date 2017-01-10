@@ -43,12 +43,12 @@ void setup() {
 }
 
 void loop() {
-  
+
   for (int totalNotes = 0; totalNotes < 5; totalNotes++) {
 
     int noteDuration = 1000 / (random(1, 3) * 2);
     tone(8, chords[currentChordIndex][random(0, 2)], noteDuration);
-    
+
     int pauseBetweenNotes = noteDuration * 1.30 * random(1, 2);
     delay(pauseBetweenNotes);
     noTone(8);
@@ -58,10 +58,10 @@ void loop() {
     delay(pauseBetweenChords);
     noTone(8);
   };
-  
+
   int numPoss = sizeof(possibilities[currentChordIndex]) / sizeof(0) + 1;
   currentChordIndex = possibilities[currentChordIndex][random(0, numPoss)];
-  
+
 }
 
 

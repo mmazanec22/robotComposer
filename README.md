@@ -1,2 +1,1 @@
-# robotComposer
-Playing with Arduinos and music theory!
+Playing with Arduinos and music theory!  First time venturing into C (the programming language); decided to use key of C minor so I can make awful puns.
