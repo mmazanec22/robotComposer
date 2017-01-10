@@ -1,24 +1,26 @@
 #include "pitches.h"
 
-int one[] = {NOTE_C3, NOTE_DS3, NOTE_G3};
-int two[] = {NOTE_D3, NOTE_F3, NOTE_A3};
+int one[] = {NOTE_C3, NOTE_DS3, NOTE_G3, NOTE_C4};
+int two[] = {NOTE_D3, NOTE_F3, NOTE_GS3, NOTE_B2, NOTE_D4};
 int three[] = {NOTE_DS3, NOTE_G3, NOTE_AS3};
-int four[] = {NOTE_F3, NOTE_GS3, NOTE_C4};
-int five[] = {NOTE_G3, NOTE_B3, NOTE_D4};
-int six[] = {NOTE_GS3, NOTE_C4, NOTE_DS4};
-int seven[] = {NOTE_B2, NOTE_D3, NOTE_F3};
+int four[] = {NOTE_C3, NOTE_F3, NOTE_GS3, NOTE_C4};
+int five[] = {NOTE_B2, NOTE_D3, NOTE_F3, NOTE_G3, NOTE_B3, NOTE_D4};
+int six[] = {NOTE_DS3, NOTE_GS3, NOTE_C4, NOTE_DS4};
+int seven[] = {NOTE_B2, NOTE_D3, NOTE_F3, NOTE_GS3, NOTE_B3};
+int ntwo[] = {NOTE_CS3, NOTE_F3, NOTE_GS3, NOTE_CS4};
 
-int *chords[7] = {one, two, three, four, five, six, seven};
+int *chords[8] = {one, two, three, four, five, six, seven, ntwo};
 
-int onePossibles[] = {0, 1, 2, 3, 4, 5, 6};
+int onePossibles[] = {0, 1, 2, 3, 4, 5, 6, 7};
 int twoPossibles[] = {4, 6};
 int threePossibles[] = {5};
 int fourPossibles[] = {4, 6};
 int fivePossibles[] = {0, 2, 5};
-int sixPossibles[] = {1, 3};
+int sixPossibles[] = {1, 3, 7};
 int sevenPossibles[] = {0, 2};
+int ntwoPossibles[] = {4};
 
-int *possibilities[7] = {
+int *possibilities[8] = {
   // if we're on one, we can go anywhere
   onePossibles,
   // two can go to five or seven
@@ -32,10 +34,12 @@ int *possibilities[7] = {
   // six can go to two or four
   sixPossibles,
   // seven can go to one or three
-  sevenPossibles
+  sevenPossibles,
+  ntwoPossibles
 };
 
 int currentChordIndex;
+int lastChordIndex;
 
 void setup() {
   randomSeed(analogRead(0));
@@ -44,21 +48,30 @@ void setup() {
 
 void loop() {
 
-  for (int totalNotes = 0; totalNotes < 5; totalNotes++) {
+  int lengthOfChord = 2000;
+  int playedSoFar = 0;
+
+  int numNotesPoss = sizeof(chords[currentChordIndex]) / sizeof(chords[currentChordIndex][0]) + 1;
+
+  while (playedSoFar < lengthOfChord) {
 
     int noteDuration = 1000 / (random(1, 3) * 2);
-    tone(8, chords[currentChordIndex][random(0, 2)], noteDuration);
+    playedSoFar = playedSoFar + noteDuration;
+    
+    tone(8, chords[currentChordIndex][random(0, numNotesPoss)], noteDuration);
 
     int pauseBetweenNotes = noteDuration * 1.30 * random(1, 2);
     delay(pauseBetweenNotes);
     noTone(8);
   }
-  if (currentChordIndex == 0 || currentChordIndex == 4){
-    int pauseBetweenChords = 1000 / (random(2, 8)) * random(0, 3);
+  if (currentChordIndex == 0 && (lastChordIndex == 4 || lastChordIndex == 6)){
+    tone(8, NOTE_C3, 1000/2);
+    int pauseBetweenChords = 2000;
     delay(pauseBetweenChords);
     noTone(8);
   };
 
+  lastChordIndex = currentChordIndex;
   int numPoss = sizeof(possibilities[currentChordIndex]) / sizeof(0) + 1;
   currentChordIndex = possibilities[currentChordIndex][random(0, numPoss)];
 
